@@ -1,4 +1,15 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi import HTTPException # Add error handling
+
+class QuestionRequest(BaseModel):
+    question: str
+    top_k: int = 3 # how many documents chunks to retrieve
+
+class AnswerResponse(BaseModel):
+    question: str
+    answer: str
+    sources: list[str]
 
 app = FastAPI()
 
@@ -6,6 +17,12 @@ app = FastAPI()
 def health():
     return {"status":"ok"}
 
-@app.post("/ask")
-def ask(question: str):
-    return {"question": question, "answer":"not implemented yet"}
+@app.post("/ask", response_model = AnswerResponse)
+def ask(request: QuestionRequest):
+    if not request.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty") # Add error handling
+    return AnswerResponse( 
+        question=request.question,
+        answer="not implemented yet",
+        sources=[]
+    )
