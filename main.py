@@ -31,7 +31,7 @@ documents = []  #in-memory for now
 
 class Document(BaseModel):
     title: str
-    content: str    
+    content: str     
 
 @app.post("/ingest")
 def ingest(doc:Document):
