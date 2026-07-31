@@ -26,3 +26,19 @@ def ask(request: QuestionRequest):
         answer="not implemented yet",
         sources=[]
     )
+
+documents = []  #in-memory for now
+
+class Document(BaseModel):
+    title: str
+    content: str    
+
+@app.post("/ingest")
+def ingest(doc:Document):
+    documents.append({"title": doc.title, "content": doc.content})
+    return {"message":f"Ingested: {doc.title}", "total_docs":len(documents)}
+
+
+@app.get("/documents")
+def list_documents():
+    return {"count": len(documents), "titles": [d["title"] for d in documents]}
