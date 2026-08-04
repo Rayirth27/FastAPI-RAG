@@ -2,7 +2,7 @@
 
 A production-ready Modular Monolith API for **Retrieval-Augmented Generation (RAG)** built with Python, FastAPI and PostgresSQL.
 
-This API allows clients to ingest enterprise documents, automatically chunk and embed text into a vector space, perform similarity searches, and generate grounded answers via LLMs—complete with source citations.
+This API allows clients to ingest enterprise documents, automatically chunk and embed text into a vector space, perform similarity searches, and generate grounded answers via LLMs-complete with source citations.
 
 ## Architecture & Stack
 
