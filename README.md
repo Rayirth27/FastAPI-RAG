@@ -1,17 +1,20 @@
 # FastAPI RAG Engine
 
-A production-ready Modular Monolith API for **Retrieval-Augmented Generation (RAG)** built with Python, FastAPI and PostgresSQL.
+A modular, security-focused Retrieval-Augmented Generation (RAG) backend, built with Python, FastAPI, PostgreSQL, and pgvector.
+The project aims to provide secure document ingestion, vector-based semantic retrieval, and grounded LLM-generated answers with source citations.
 
-This API allows clients to ingest enterprise documents, automatically chunk and embed text into a vector space, perform similarity searches, and generate grounded answers via LLMs-complete with source citations.
+### Project Status: Actively Under Development
+
+The current implementation supports document persistence in PostgreSQL, SQLAlchemy ORM integration, and API-key authentication. The complete RAG pipeline is being developed incrementally.
 
 ## Architecture & Stack
 
-* **Framework:** [FastAPI](https://fastapi.tiangolo.com/) (Asynchronous Web API & Pydantic Schemas)
-* **LLM Engine:** Local Open-Source LLM (e.g., [Ollama](https://ollama.com/) / Hugging Face Transformers)
-* **Database & Vector Search:** PostgreSQL + [`pgvector`](https://github.com/pgvector/pgvector)
-* **Embeddings:** `sentence-transformers` (`all-MiniLM-L6-v2` - free & local)
-* **Testing:** `pytest` & FastAPI `TestClient`
-* **Infrastructure:** Docker, GitHub Actions (CI/CD)
+* **API Framework:** FastAPI with Pydantic request/response validation
+* **Database:** PostgreSQL 17 with pgvector
+* **Database Access:** SQLAlchemy 2.x and psycopg 3
+* **Authentication:** API-key authentication using the X-API-Key header
+* **Infrastructure:** Docker Compose
+* **Testing:** pytest and FastAPI TestClient
 
 ## Key Features
 
