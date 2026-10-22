@@ -9,6 +9,9 @@ from models import DocumentRecord
 
 from security import require_api_key
 
+from typing import Annotated
+from pydantic import StringConstraints
+
 app = FastAPI()
 
 
@@ -24,8 +27,24 @@ class AnswerResponse(BaseModel):
 
 
 class Document(BaseModel):
-    title: str
-    content: str
+    title: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=1,
+            max_length=200,
+        ),
+    ]
+
+    content: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=1,
+            max_length=20000,
+        ),
+    ]
+
 
 
 @app.get("/")
