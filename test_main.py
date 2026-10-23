@@ -173,16 +173,19 @@ def test_upload_rejects_oversized_pdf(monkeypatch):
 
 def test_upload_accepts_valid_pdf(monkeypatch):
     from io import BytesIO
-    from pypdf import PdfWriter
+    from reportlab.pdfgen import canvas
 
     monkeypatch.setenv("API_KEY", "test-only-api-key")
 
-    # Create a genuine PDF in memory
-    writer = PdfWriter()
-    writer.add_blank_page(width=595, height=842)
-
     buffer = BytesIO()
-    writer.write(buffer)
+
+    pdf = canvas.Canvas(buffer)
+    pdf.drawString(
+        72, 750,
+        "FastAPI RAG PDF integration test"
+    )
+    pdf.save()
+
     pdf_content = buffer.getvalue()
 
     response = client.post(
@@ -198,7 +201,10 @@ def test_upload_accepts_valid_pdf(monkeypatch):
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-        "message": "PDF accepted for processing",
-        "size_bytes": len(pdf_content),
-    }
+
+    result = response.json()
+
+    assert result["message"] == "PDF text extracted successfully"
+    assert result["size_bytes"] == len(pdf_content)
+    assert "FastAPI RAG PDF integration test" in result["extracted_text"]
+    assert result["character_count"] > 0
