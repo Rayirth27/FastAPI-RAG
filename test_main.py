@@ -3,6 +3,8 @@ from main import app
 from unittest.mock import MagicMock
 import main
 
+import pytest
+
 client = TestClient(app)
 
 def test_health():
@@ -71,4 +73,32 @@ def test_ingest_rejects_invalid_api_key(monkeypatch):
     )
 
     assert response.status_code == 401
-    
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"title": "   ", "content": ""},
+        {"title": "A" * 201, "content": "Valid content"},
+        {"title": "Valid title", "content": "A" * 20001},
+    ],
+)
+def test_ingest_rejects_invalid_documents(monkeypatch, payload):
+    monkeypatch.setenv("API_KEY", "test-only-api-key")
+
+    fake_db = MagicMock()
+    app.dependency_overrides[main.get_db] = lambda: fake_db
+
+    try:
+        response = client.post(
+            "/ingest",
+            json=payload,
+            headers={"X-API-Key": "test-only-api-key"},
+        )
+
+        assert response.status_code == 422
+        fake_db.add.assert_not_called()
+        fake_db.commit.assert_not_called()
+
+    finally:
+        app.dependency_overrides.pop(main.get_db, None)
