@@ -1,4 +1,4 @@
-
+from pdf_processing import extract_pdf_text, PDFProcessingError
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -128,9 +128,20 @@ async def upload_pdf(file: UploadFile = File(...)):
                 detail="Invalid PDF file"
             )
         
-        return{
-            "message": "PDF accepted for processing",
-            "size_bytes": len(content)
+        try:
+            extracted_text = extract_pdf_text(content)
+
+        except PDFProcessingError as exc:
+            raise HTTPException(
+                status_code=422,
+                detail=str(exc),
+            ) from exc
+
+        return {
+            "message": "PDF text extracted successfully",
+            "size_bytes": len(content),
+            "character_count": len(extracted_text),
+            "extracted_text": extracted_text,
         }
 
     finally:
