@@ -1,5 +1,5 @@
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -99,3 +99,39 @@ def list_documents(db: Session = Depends(get_db)):
             for record in records
         ],
     }
+
+MAX_PDF_SIZE = 5 * 1024 * 1024 # 5 MB
+
+@app.post("/upload", dependencies=[Depends(require_api_key)])
+async def upload_pdf(file: UploadFile = File(...)):
+    try:
+        # TO check the declated content type
+        if file.content_type != "application/pdf":
+            raise HTTPException(
+                status_code=415,
+                detail="Only PDF files are allowed",
+            )
+
+        #2. Read at most one byte beyond the allowed limit
+        content = await file.read(MAX_PDF_SIZE + 1)
+
+        if len(content) > MAX_PDF_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail="PDF exeeds 5 MB limit",
+            )
+
+        #3. Check the PDF file signature
+        if not content.startswith(b"%PDF-"):
+            raise HTTPException(
+                status_code=422,
+                detail="Invalid PDF file"
+            )
+        
+        return{
+            "message": "PDF accepted for processing",
+            "size_bytes": len(content)
+        }
+
+    finally:
+        await file.close()
