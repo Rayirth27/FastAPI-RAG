@@ -208,3 +208,36 @@ def test_upload_accepts_valid_pdf(monkeypatch):
     assert result["size_bytes"] == len(pdf_content)
     assert "FastAPI RAG PDF integration test" in result["extracted_text"]
     assert result["character_count"] > 0
+
+
+
+def test_upload_rejects_textless_pdf(monkeypatch):
+    from io import BytesIO
+    from pypdf import PdfWriter
+
+    monkeypatch.setenv("API_KEY", "test-only-api-key")
+
+    # Generate a genuine PDF containing a blank page
+    writer = PdfWriter()
+    writer.add_blank_page(width=595, height=842)
+
+    buffer = BytesIO()
+    writer.write(buffer)
+
+    response = client.post(
+        "/upload",
+        headers={"X-API-Key": "test-only-api-key"},
+        files={
+            "file": (
+                "blank.pdf",
+                buffer.getvalue(),
+                "application/pdf",
+            )
+        },
+    )
+
+    assert response.status_code == 422
+    assert (
+        response.json()["detail"]
+        == "PDF contains no extractable text"
+    )
