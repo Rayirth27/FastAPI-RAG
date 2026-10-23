@@ -168,3 +168,37 @@ def test_upload_rejects_oversized_pdf(monkeypatch):
     )
 
     assert response.status_code == 413
+
+
+
+def test_upload_accepts_valid_pdf(monkeypatch):
+    from io import BytesIO
+    from pypdf import PdfWriter
+
+    monkeypatch.setenv("API_KEY", "test-only-api-key")
+
+    # Create a genuine PDF in memory
+    writer = PdfWriter()
+    writer.add_blank_page(width=595, height=842)
+
+    buffer = BytesIO()
+    writer.write(buffer)
+    pdf_content = buffer.getvalue()
+
+    response = client.post(
+        "/upload",
+        headers={"X-API-Key": "test-only-api-key"},
+        files={
+            "file": (
+                "sample.pdf",
+                pdf_content,
+                "application/pdf",
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "PDF accepted for processing",
+        "size_bytes": len(pdf_content),
+    }
