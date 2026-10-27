@@ -9,13 +9,13 @@
 - [x] Real database integration tests
 
 ## 2. RAG Pipeline
-- [ ] PDF upload and text extraction
-- [ ] Text chunking and embeddings
+- [x] PDF upload and text extraction
+- [x] Text chunking and embeddings
 - [ ] Vector storage and similarity search
 - [ ] Grounded LLM answers with sources
 
 ## 3. Security and Reliability
-- [ ] API key authentication
+- [x] API key authentication
 - [ ] Input and upload validation
 - [ ] Document access control
 - [ ] Database and LLM failure handling
