@@ -16,7 +16,7 @@
 
 ## 3. Security and Reliability
 - [x] API key authentication
-- [ ] Input and upload validation
+- [x] Input and upload validation
 - [ ] Document access control
 - [ ] Database and LLM failure handling
 - [ ] Automated security and integration tests
