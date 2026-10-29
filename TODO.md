@@ -11,7 +11,7 @@
 ## 2. RAG Pipeline
 - [x] PDF upload and text extraction
 - [x] Text chunking and embeddings
-- [ ] Vector storage and similarity search
+- [x] Vector storage and similarity search
 - [ ] Grounded LLM answers with sources
 
 ## 3. Security and Reliability
