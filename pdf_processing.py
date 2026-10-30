@@ -3,14 +3,12 @@ from io import BytesIO
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
 
-
 MAX_PAGES = 20
 MAX_EXTRACTED_CHARS = 100_000
 
 
 class PDFProcessingError(ValueError):
     pass
-
 
 def extract_pdf_text(content: bytes) -> str:
     try:
