@@ -5,3 +5,4 @@ venv/
 .env
 # Local VS Code settings
 .vscode/
+local-backups/
